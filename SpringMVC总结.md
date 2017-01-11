@@ -1,5 +1,5 @@
 #**Spring MVC总结**#
-  
+----------  
 ##web.xml 配置文件结构以及功能##
 ###1.xml头文件###
 ```java
@@ -67,3 +67,98 @@
         <url-pattern>/resume/*</url-pattern>  
     </filter-mapping>
 ```
+##后台Controller向html(或其他前端页面如ftl)传递数据##
+###1.使用SpringMVC自带的ModelMap(org.springframework.ui.ModelMap)###
+```java
+	//后台Controller
+	@RequestMapping("/newIndex")
+	public String index(HttpServletRequest request, ModelMap modelMap) {
+		modelMap.put("deviceNames", deviceNames.toArray());
+		...
+		modelMap.put("internalNumbers", internalNumbers.toArray());	
+		return "devicemanager/newIndex";
+	}
+
+----------------------------------------------------------------------------
+	//前端newIndex静态页面
+	<div class="col-lg-1" style="padding-left: 0px;">
+		<select id="deviceNameSelect" class="form-control">
+			<option value="all">全部</option> <#if deviceNames?exists> <#list
+			deviceNames as deviceName>
+			<option value="${deviceName}">${deviceName}</option> </#list>
+			</#if>
+		</select>
+	</div>
+```
+###2.使用自定义XXModel###
+XXModel是自定义的类，放在Model层，用于将前端页面需要的参数值封装在一个对象之中
+```java
+	//静态页面内容，含有click的js
+	otherJs=["/js/bootstrap/js/bootbox.js",
+		"/js/usermanager/addUser.js",
+		"/js/core/core.js"]
+
+	<div class="row" style="padding-top: 5px; padding-left: 680px; padding-right: 5px;">
+		<label for="addUserInfoLabel" class="col-sm-2 control-label">
+			<button id="addUserInfo" class="btn btn-primary" onClick="updateUserInfo()">修改用户信息</button>
+		</label>
+		<div class="col-sm-10"></div>
+	</div>
+-----------------------------------------------------------------------------
+	//利用js中的ajax来处理从静态页面获得的信息，将信息封装为data后传递给后台Controller，
+	//success之后处理Controller返回的Map。
+	function updateUserInfo() {
+		var data = {};
+		data.corpMail = $("#corpMail").val();
+		data.userName = $("#userName").val();
+		data.jobNumber = $("#jobNumber").val();
+		data.telephone = $("#telephone").val();
+		if (!isNullOrEmpty(data.corpMail) && !isNullOrEmpty(data.userName)) {
+			$.ajax({
+				url : '/usermanager/updateUserInfo.html',
+				type : 'POST',
+				dataType : 'json',
+				data : data,
+				success : function(json) {
+					if (json.retCode == 200) {
+						bootbox.alert("修改用户信息成功！");
+					} else {
+						bootbox.alert("修改用户信息失败，请稍后再试！");
+					}
+				}
+			});
+		} else {
+			bootbox.alert("请填写完整的用户信息！");
+		}
+	}
+--------------------------------------------------------------------------------
+	//自定义Model
+	public class UserModel {
+		private String userID;
+		private String corpMail;
+		private String userName;
+		private String jobNumber;
+		private String telephone;
+		//各个属性的get、set方法
+		get()...
+		set()...
+	}
+
+	//后台Controller接收js传来的数据，并用自定义类UserModel去匹配各个参数
+	@RequestMapping("/updateUserInfo")
+	@ResponseBody
+	public Map<String, Object> updateUserInfo(UserModel userModel) {
+		
+		int status = userDaoServiceImpl.updateUserInfo(userModel);
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		if (status > 0) {
+			retMap.put("retCode", 200);
+			retMap.put("retDesc", "操作成功");
+		} else {
+			retMap.put("retCode", -1);
+			retMap.put("retDesc", "插入数据库失败");
+		}
+		return retMap;
+	}
+```
+
