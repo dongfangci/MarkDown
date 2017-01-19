@@ -21,3 +21,28 @@
 
 ### 5. alt+shift+r：重命名###
 重命名属性及方法在几年前还是个很麻烦的事，需要大量使用搜索及替换，以至于代码变得零零散散的。今天的Java IDE提供源码处理功能，Eclipse也是一样。现在，变量和方法的重命名变得十分简单，你会习惯于在每次出现更好替代名称的时候都做一次重命名。要使 用这个功能，将鼠标移动至属性名或方法名上，按下alt+shift+r，输入新名称并点击回车。就此完成。如果你重命名的是类中的一个属性，你可以点击alt+shift+r两次，这会呼叫出源码处理对话框，可以实现get及set方法的自动重命名。
+###6.Control-Shift-T:###
+ 打开类型（Open type）。如果你不是有意磨洋工，还是忘记通过源码树（source tree）打开的方式吧。用eclipse很容易打开接口的实现类的，按ctrl+t会列出接口的实现类列表
+###7.Control+ H###
+使用快捷键“ctrl+H”打开文件搜索对话框，选择“File Search”标签，在Containing text中输入你需要搜索的字符串，在Scope中，选择你要搜索的范围，点击Search。 
+###8.Control-Shift-G:###
+ 在workspace中搜索引用（reference）。这 是重构的前提。对于方法，这个热键的作用和F3恰好相反。它使你在方法的栈中，向上找出一个方法的所有调用者。一个与此相关的功能是开启“标记”功能 （occurrence marking） 。选择Windows->Preferences->Java-> Editor-> Mark Occurrences，勾选选项。这时，当你单击一个元素的时候，代码中所有该元素存在的地方都会被高亮显示。我个人只使用“标记本地变量”（Mark Local Variables）。注意：太多的高亮显示会拖慢Eclipse。
+###Alt+方向键上下###
+这也是个节省时间的法宝。这个组合将当前行的内容往上或下移动。在try/catch部分，这个快捷方式尤其好使。
+###Alt+方向键左右###
+在导航历史记录（Navigation History）中后退、向前
+### Control+Q:###
+回到最后一次编辑的地方。这个快捷键也是当你在代码中跳转后用的。特别是当你钻的过深，忘记你最初在做什么的时候。
+###Control-Shift-F:###
+ CodeàJavaàPreferencesà根据代码风格设定重新格式化代码。我 们的团队有统一的代码格式，我们把它放在我们的wiki上。要这么做，我们打开Eclipse，选择Window Style，然后设置Code Formatter，Code Style和Organize Imports。利用导出（Export）功能来生成配置文件。我们把这些配置文件放在wiki上，然后团队里的每个人都导入到自己的Eclipse中。
+### Ctrl+T###
+查看一个类的继承关系树，是自顶向下的，再多按一次Ctrl+T, 会换成自底向上的显示结构。
+
+提示：选中一个方法名，按Ctrl+T，可以查看到有这个同名方法的父类、子类、接口。
+
+助记："T"------->"Tree"----->"层次树"
+###补充：##
+**自动遍历一个集合**：for + Control-Space: 如果你还不知道，那么你应该记住Control-Space是自动完成功能。在Eclipse中，你还可以自动完成结构。在一个数组或集合范围内，试试看 输入“for”然后按下Control-Space键。Eclipse会问你你想要遍历哪一个集合然后自动完成循环代码。
+**使用分级布局：** 在包浏览视图（Package Explorer view）中默认的布局（扁平式）方式让我困惑，它把包的全名显示在导航树（navigation tree）中。我更喜欢我源码的包和文件系统视图，在Eclipse中叫做分级布局（Hierarchical Layout）。要切换到这种模式，点击包浏览视图中向下的按钮，选择布局（Layout），然后选择分级（Hierarchial）。
+**一次显示多个文件：**你可以一次浏览多个文件。把不在激活状态的编辑窗口拖到激活窗口的底部或侧边的滚动条上，就可以打开该编辑窗口。这是我能描述该窍门的最好方式了。
+**锁定命令行窗口：**在命令行视图中（Window ->Show View ->Other ->Basic ->Console），试试看用滚动锁定按钮来锁定控制台输出不要滚屏。
