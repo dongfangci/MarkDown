@@ -37,7 +37,7 @@ Java中异常提供了一种识别及响应错误情况的一致性机制，有�
 ###具体明确###
 Java定义了一个异常类的层次结构,其以Throwable开始，扩展出Error和Exception，而Exception又扩展出RuntimeException.如图1所示.
 
-
+![](http://i.imgur.com/I4H2pDJ.gif)
 图1.Java异常层次结构
 
 这四个类是泛化的，并不提供多少出错信息，虽然实例化这几个类是语法上合法的(如:new Throwable())，但是最好还是把它们当虚基类看，使用它们更加特化的子类。Java已经提供了大量异常子类，如需更加具体，你也可以定义自己的异常类。
@@ -73,16 +73,15 @@ catch (IOException e){
 ```
 JCheckbook 通过使用多个catch块来给用户提供捕获到异常的明确信息。举例来说：如果捕获了FileNotFoundException，它可以提示用户指定另一 个文件，某些情况下多个catch块带来的额外编码工作量可能是非必要的负担，但在这个例子中，额外的代码的确帮助程序提供了对用户更友好的响应。
 
-除前三个catch块处理的异常之外，最后一个catch块在IOException抛出时给用户提供了更泛化的错误信息.这样一来，程序就可以尽可能提供具体的信息，但也有能力处理未预料到的其他异常。
+除前三个catch块处理的异常之外，最后一个catch块在IOException抛出时给用户提供了更泛化的错误信息。这样一来，程序就可以尽可能提供具体的信息，但也有能力处理未预料到的其他异常。
 
-有 时开发人员会捕获范化异常，并显示异常类名称或者打印堆栈信息以求＂具体＂。千万别这么干！用户看到java.io.EOFException或者堆栈信息 只会头疼而不是获得帮助。应当捕获具体的异常并且用＂人话＂给用户提示确切的信息。不过，异常堆栈倒是可以在你的日志文件里打印。记住，异常和堆栈信息是用来帮助开发人 员而不是用户的。
+**有时开发人员会捕获范化异常，并显示异常类名称或者打印堆栈信息以求＂具体＂。千万别这么干！用户看到java.io.EOFException或者堆栈信息 只会头疼而不是获得帮助。应当捕获具体的异常并且用＂人话＂给用户提示确切的信息。不过，异常堆栈倒是可以在你的日志文件里打印。记住，异常和堆栈信息是用来帮助开发人员而不是用户的。**
 
-最后，应该注意到JCheckbook并没有在readPreferences()中捕获异常，而是将捕获和处理异常留到用户界面层来做，这样就能用对话框或其他方式来通知用户。这被称为＂延迟捕获＂，下文就会谈到。
+**最后，应该注意到JCheckbook并没有在readPreferences()中捕获异常，而是将捕获和处理异常留到用户界面层来做，这样就能用对话框或其他方式来通知用户。这被称为＂延迟捕获＂，下文就会谈到。**
 
 ###提早抛出###
 异常堆栈信息提供了导致异常出现的方法调用链的精确顺序，包括每个方法调用的类名，方法名，代码文件名甚至行数，以此来精确定位异常出现的现场。
-
-
+```java
 java.lang.NullPointerException
 at java.io.FileInputStream.open(Native Method)
 at java.io.FileInputStream.<init>(FileInputStream.java:103)
@@ -90,16 +89,16 @@ at jcheckbook.JCheckbook.readPreferences(JCheckbook.java:225)
 at jcheckbook.JCheckbook.startup(JCheckbook.java:116)
 at jcheckbook.JCheckbook.<init>(JCheckbook.java:27)
 at jcheckbook.JCheckbook.main(JCheckbook.java:318)
+```
 
-以 上展示了FileInputStream类的open()方法抛出NullPointerException的情况。不过注意 FileInputStream.close()是标准Java类库的一部分，很可能导致这个异常的问题原因在于我们的代码本身而不是Java API。所以问题很可能出现在前面的其中一个方法，幸好它也在堆栈信息中打印出来了。
+以上展示了FileInputStream类的open()方法抛出NullPointerException的情况。不过注意 FileInputStream.close()是标准Java类库的一部分，很可能导致这个异常的问题原因在于我们的代码本身而不是Java API。所以问题很可能出现在前面的其中一个方法，幸好它也在堆栈信息中打印出来了。
 
 不幸的是，NullPointerException是Java中信息量最少的（却也是最常遭遇且让人崩溃的）异常。它压根不提我们最关心的事情：到底哪里是null。所以我们不得不回退几步去找哪里出了错。
 
 通过逐步回退跟踪堆栈信息并检查代码，我们可以确定错误原因是向readPreferences()传入了一个空文件名参数。既然readPreferences()知道它不能处理空文件名，所以马上检查该条件：
 
-
-public void readPreferences(String filename)
-throws IllegalArgumentException{
+```java
+public void readPreferences (String filename) throws IllegalArgumentException{
     if (filename == null){
          throw new IllegalArgumentException("filename is null");
     }  //if
@@ -110,6 +109,7 @@ throws IllegalArgumentException{
  
    //...read the preferences file...
 }
+```
 
 通过提早抛出异常（又称＂迅速失败＂），异常得以清晰又准确。堆栈信息立即反映出什么出了错（提供了非法参数值），为什么出错（文件名不能为空值），以及哪里出的错（readPreferences()的前部分）。这样我们的堆栈信息就能如实提供：
 
