@@ -16,3 +16,9 @@
 ```
 
 这样你就完成了向远程仓库的推送。
+###Git使用代理加速命令###
+```java
+git config --global http.proxy 'socks5://127.0.0.1:1080'   
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+
+```
