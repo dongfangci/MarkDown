@@ -1,20 +1,21 @@
 #**Spring MVC总结**#
 ----------  
 ##web.xml 配置文件结构以及功能##
-###1.xml头文件###
-```java
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+###1.xml头文件,这是使用Web Moudle 3.0以上的配置头文件###
+```
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"  
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   
+          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"  
+    version="3.0">  
+    <display-name>Servlet 3.0 Web Application</display-name>  
 </web-app>
 ```
 ###2.其他配置项均写在web-app配置之内###
 **	(1)Servlet配置：配置拦截器以及映射拦截地址**
-```java
+```
 <servlet>
-<servlet-name>autox</servlet-name>
+<servlet-name>SpringMVC</servlet-name>
 <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 <init-param>
 	<param-name>contextConfigLocation</param-name>
@@ -24,10 +25,17 @@
 </servlet>
 
 <servlet-mapping>
-	<servlet-name>autox</servlet-name>
+	<servlet-name>SpringMVC</servlet-name>
 	<url-pattern>*.html</url-pattern>
 </servlet-mapping>
 ```
+注意上面配置的spring-mvc.xml文件的路径为/WEB-INF/spring-mvc.xml，即是和web.xml文件处于同一目录下。更为常见的配置路径如下：
+```
+<param-value>classpath:spring-mvc.xml</param-value>  
+```
+配置的路径为classpath，文件放在src/main/resources文件夹即可。
+
+
 **(2)Filter配置1：配置编码**
 ```java
 	<filter>
@@ -67,6 +75,13 @@
         <url-pattern>/resume/*</url-pattern>  
     </filter-mapping>
 ```
+##Spring-mvc.xml配置文件配置##
+当web.xml配置文件配置的spring-mvc.xml文件的路径如下时：
+```
+<param-value>classpath:spring-mvc.xml</param-value>  
+```
+配置的路径为classpath，文件放在src/main/resources文件夹即可。
+
 ##后台Controller向html(或其他前端页面如ftl)传递数据##
 ###1.使用SpringMVC自带的ModelMap(org.springframework.ui.ModelMap)###
 ```java
